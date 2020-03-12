@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 				time(&t2);
 				struct tm* lt2 = localtime(&t2);
 				char url[100], name[100];
-				sprintf(url, "https://picsum.photos/%ld", t2 % 1000);
+				sprintf(url, "https://picsum.photos/%ld", (t2 % 1000) + 100);
 				sprintf(name, "%d-%02d-%02d_%02d:%02d:%02d", lt2->tm_year + 1900, lt2->tm_mon + 1, lt2->tm_mday, lt2->tm_hour, lt2->tm_min, lt2->tm_sec);
 				pid_t child2 = fork();
 				if (child2 == 0) {
