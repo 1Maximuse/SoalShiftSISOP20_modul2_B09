@@ -113,3 +113,25 @@ Proses untuk setiap folder (2) akan menjalankan loop setiap 5 detik. Setiap loop
 Setelah loop pada proses folder (2) selesai berjalan 20 kali, parent (2) akan memastikan bahwa semua child process `wget` (3) yang ada sudah selesai, kemudian menjalankan child process baru untuk melakukan perintah `zip` (4).
 
 Proses folder selesai dengan melakukan perintah `rm` untuk menghapus foldernya.
+
+## #3 &ndash; Multiprocessing
+> Source code: [soal3.c](https://github.com/1Maximuse/SoalShiftSISOP20_modul2_B09/blob/master/soal3/soal3.c)
+
+Pertama, program melakukan fork dua kali untuk membuat kedua subfolder. Proses utama akan menunggu kedua child process selesai sebelum melanjutkan. Lalu, program melakukan fork lagi untuk melakukan `unzip` file `jpg.zip`.
+
+Setelah `unzip` selesai, proses utama akan melakukan looping untuk setiap objek pada direktori, menggunakan kode berikut:
+```c
+DIR* directory = opendir("jpg");
+struct dirent* item = readdir(directory);
+while (item != NULL) {
+	...
+	item = readdir(directory);
+}
+```
+`struct dirent` memiliki isi berupa `d_name` yaitu nama objeknya, dan `d_type` yaitu tipenya, `4` untuk direktori dan `8` untuk file.
+
+Dengan melewati objek `.` dan `..`, setiap loop akan membuat child process lagi untuk memproses setiap objek.
+
+Apabila objek adalah file, child process tersebut berakhir dengan melakukan operasi `mv` untuk memindah ke subfolder `sedaap`.
+
+Apabila objek adalah folder, maka pertama child process melakukan fork untuk menjalankan `mv`, memindahkan folder ke subfolder `indomie`. Lalu, child proces melakukan fork lagi untuk membuat file `coba1.txt`. Child process menunggu tiga detik kemudian berakhir dengan membuat file `coba2.txt`.
